@@ -89,6 +89,23 @@ ul {
   display: none;
 }
 
+/* Participants div */
+.participants {
+  display: table;
+  margin: 0 auto;
+}
+
+.participants ul {
+  list-style: none;
+  padding: 0em;
+}
+
+.participants ul li {
+  font-size: 200%;
+  display: inline-block;
+  padding: 0 6px;
+}
+
 /* Chat page */
 
 .chat.page {

@@ -2,18 +2,19 @@ $(function() {
   var FADE_TIME = 150; // ms
   var TYPING_TIMER_LENGTH = 400; // ms
   var COLORS = [
-    "#e21400",
-    "#91580f",
-    "#f8a700",
-    "#f78b00",
-    "#58dc00",
-    "#287b00",
-    "#a8f07a",
-    "#4ae8c4",
-    "#3b88eb",
-    "#3824aa",
-    "#a700ff",
-    "#d300e7"
+    "#1f77b4",
+    "#aec7e8",
+    "#ff7f0e",
+    "#ffbb78",
+    "#2ca02c",
+    "#98df8a",
+    "#d62728",
+    "#ff9896",
+    "#9467bd",
+    "#8c564b",
+    "#e377c2",
+    "#bcbd22",
+    "#17becf"
   ];
 
   // Initialize variables
@@ -66,7 +67,7 @@ $(function() {
   };
 
   // Sets the client's room
-  const setRoom = () => {
+  const joinRoom = () => {
     room = cleanInput(
       $roomInput
         .val()
@@ -123,7 +124,7 @@ $(function() {
 
     var $usernameDiv = $('<span class="username"/>')
       .text(data.username)
-      .css("color", getUsernameColor(data.username));
+      .css("color", getHashColor(room + data.username));
     var $messageBodyDiv = $('<span class="messageBody">').text(data.message);
 
     var typingClass = data.typing ? "typing" : "";
@@ -214,12 +215,12 @@ $(function() {
     });
   };
 
-  // Gets the color of a username through our hash function
-  const getUsernameColor = username => {
+  // Gets the color of a value through our hash function
+  const getHashColor = value => {
     // Compute hash code
     var hash = 7;
-    for (var i = 0; i < username.length; i++) {
-      hash = username.charCodeAt(i) + (hash << 5) - hash;
+    for (var i = 0; i < value.length; i++) {
+      hash = value.charCodeAt(i) + (hash << 5) - hash;
     }
     // Calculate color
     var index = Math.abs(hash % COLORS.length);
@@ -240,7 +241,7 @@ $(function() {
         socket.emit("stop typing");
         typing = false;
       } else if (username) {
-        setRoom();
+        joinRoom();
       } else {
         setUsername();
       }
@@ -310,8 +311,8 @@ $(function() {
 
   socket.on("reconnect", () => {
     log("you have been reconnected");
-    if (username) {
-      socket.emit("add user", username, username);
+    if (username && room) {
+      socket.emit("add user", username, room);
     }
   });
 

@@ -32,7 +32,7 @@ io.on("connection", socket => {
 
   // when the client emits 'add user', this listens and executes
   socket.on("add user", (username, room) => {
-    if (addedUser) return;
+    if (addedUser || username === "HOST" || !socket.adapter.rooms[room]) return;
 
     // we store the username in the socket session for this client
     socket.username = username;
@@ -46,6 +46,20 @@ io.on("connection", socket => {
     // echo globally (all clients) that a person has connected
     socket.broadcast.in(socket.room).emit("user joined", {
       username: socket.username,
+      numUsers: numUsers
+    });
+  });
+
+  // when the client emits 'add user', this listens and executes
+  socket.on("add host", room => {
+    if (addedUser) return;
+
+    // we store the username in the socket session for this client
+    socket.username = "HOST";
+    socket.room = room;
+    addedUser = true;
+    socket.join(room);
+    socket.emit("login", {
       numUsers: numUsers
     });
   });
