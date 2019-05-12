@@ -6,14 +6,19 @@ var server = require("http").createServer(app);
 var io = require("socket.io")(server);
 require("dotenv").config();
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 4000;
 
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
 });
 
 // Routing
-app.use(express.static(path.resolve(__dirname, "..", "public")));
+// app.use(express.static(path.resolve(__dirname, "..", "public")));
+app.use(express.static(path.resolve(__dirname, "..", "build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "..", "build", "index.html"));
+});
 
 // Chatroom
 var numUsers = 0;
