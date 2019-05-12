@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 
-import Client from "./Client";
-import Host from "./Host";
+import Client from "./client";
+import Host from "./host";
 
 const App = () => (
   <BrowserRouter>

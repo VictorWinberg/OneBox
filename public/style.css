@@ -85,10 +85,6 @@ ul {
   font-weight: 100;
 }
 
-.login.page .enter-room {
-  display: none;
-}
-
 /* Participants div */
 .participants {
   display: table;
@@ -104,12 +100,6 @@ ul {
   font-size: 200%;
   display: inline-block;
   padding: 0 6px;
-}
-
-/* Chat page */
-
-.chat.page {
-  display: none;
 }
 
 /* Font */
