@@ -1,30 +1,35 @@
 // Setup basic express server
-var express = require("express");
-var app = express();
-var path = require("path");
-var server = require("http").createServer(app);
-var io = require("socket.io")(server);
+const express = require("express");
+const app = express();
+const path = require("path");
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
+const { shuffle } = require("shuffle-seed");
 require("dotenv").config();
 
-var port = process.env.PORT || 4000;
+const port = process.env.PORT || 4000;
+
+const COLORS = "#1f77b4,#aec7e8,#ff7f0e,#ffbb78,#2ca02c,#98df8a,#d62728,#ff9896,#9467bd,#8c564b,#e377c2,#bcbd22,#17becf".split(
+  ","
+);
 
 server.listen(port, () => {
   console.log("Server listening at port %d", port);
 });
 
 // Routing
-// app.use(express.static(path.resolve(__dirname, "..", "public")));
-app.use(express.static(path.resolve(__dirname, "..", "build")));
+app.use(express.static(path.resolve(__dirname, "..", "public")));
+// app.use(express.static(path.resolve(__dirname, "..", "build")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "..", "build", "index.html"));
 });
 
 // Chatroom
-var numUsers = 0;
+let numUsers = 0;
 
 io.on("connection", socket => {
-  var addedUser = false;
+  let addedUser = false;
 
   // when the client emits 'new message', this listens and executes
   socket.on("new message", data => {
@@ -42,6 +47,9 @@ io.on("connection", socket => {
     // we store the username in the socket session for this client
     socket.username = username;
     socket.room = room;
+    socket.color = shuffle(COLORS, room)[
+      socket.adapter.rooms[room].length % COLORS.length
+    ];
     ++numUsers;
     addedUser = true;
     socket.join(room);
@@ -51,6 +59,7 @@ io.on("connection", socket => {
     // echo globally (all clients) that a person has connected
     socket.broadcast.in(socket.room).emit("user joined", {
       username: socket.username,
+      color: socket.color,
       numUsers: numUsers
     });
   });
@@ -72,14 +81,16 @@ io.on("connection", socket => {
   // when the client emits 'typing', we broadcast it to others
   socket.on("typing", () => {
     socket.broadcast.in(socket.room).emit("typing", {
-      username: socket.username
+      username: socket.username,
+      color: socket.color
     });
   });
 
   // when the client emits 'stop typing', we broadcast it to others
   socket.on("stop typing", () => {
     socket.broadcast.in(socket.room).emit("stop typing", {
-      username: socket.username
+      username: socket.username,
+      color: socket.color
     });
   });
 
@@ -92,6 +103,7 @@ io.on("connection", socket => {
       // echo globally that this client has left
       socket.broadcast.in(socket.room).emit("user left", {
         username: socket.username,
+        color: socket.color,
         numUsers: numUsers
       });
     }

@@ -1,21 +1,6 @@
 $(function() {
   var FADE_TIME = 150; // ms
   var TYPING_TIMER_LENGTH = 400; // ms
-  var COLORS = [
-    "#1f77b4",
-    "#aec7e8",
-    "#ff7f0e",
-    "#ffbb78",
-    "#2ca02c",
-    "#98df8a",
-    "#d62728",
-    "#ff9896",
-    "#9467bd",
-    "#8c564b",
-    "#e377c2",
-    "#bcbd22",
-    "#17becf"
-  ];
 
   // Initialize variables
   var $window = $(window);
@@ -124,7 +109,7 @@ $(function() {
 
     var $usernameDiv = $('<span class="username"/>')
       .text(data.username)
-      .css("color", getHashColor(room + data.username));
+      .css("color", data.color);
     var $messageBodyDiv = $('<span class="messageBody">').text(data.message);
 
     var typingClass = data.typing ? "typing" : "";
@@ -213,18 +198,6 @@ $(function() {
     return $(".typing.message").filter(function(i) {
       return $(this).data("username") === data.username;
     });
-  };
-
-  // Gets the color of a value through our hash function
-  const getHashColor = value => {
-    // Compute hash code
-    var hash = 7;
-    for (var i = 0; i < value.length; i++) {
-      hash = value.charCodeAt(i) + (hash << 5) - hash;
-    }
-    // Calculate color
-    var index = Math.abs(hash % COLORS.length);
-    return COLORS[index];
   };
 
   // Keyboard events

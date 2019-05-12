@@ -41,7 +41,7 @@ $(function() {
   const addParticipant = data => {
     var $usernameDiv = $("<li />")
       .text(data.username)
-      .css("color", getHashColor(room + data.username));
+      .css("color", data.color);
 
     $participantsUl.append($usernameDiv);
   };
@@ -51,18 +51,6 @@ $(function() {
     var $usernameDiv = $(`.participants ul li:contains('${data.username}')`);
 
     $usernameDiv.remove();
-  };
-
-  // Gets the color of a value through our hash function
-  const getHashColor = value => {
-    // Compute hash code
-    var hash = 7;
-    for (var i = 0; i < value.length; i++) {
-      hash = value.charCodeAt(i) + (hash << 5) - hash;
-    }
-    // Calculate color
-    var index = Math.abs(hash % COLORS.length);
-    return COLORS[index];
   };
 
   // Socket events
