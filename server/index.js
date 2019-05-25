@@ -36,6 +36,7 @@ io.on("connection", socket => {
     // we tell the client to execute 'new message'
     socket.broadcast.in(socket.room).emit("new message", {
       username: socket.username,
+      color: socket.color,
       message: data
     });
   });
@@ -54,7 +55,7 @@ io.on("connection", socket => {
     addedUser = true;
     socket.join(room);
     socket.emit("login", {
-      numUsers: numUsers
+      color: socket.color
     });
     // echo globally (all clients) that a person has connected
     socket.broadcast.in(socket.room).emit("user joined", {

@@ -1,8 +1,10 @@
 import { createStore, combineReducers } from "redux";
 import { combineForms } from "react-redux-form";
 
-const initialForm = { username: "", room: "", message: "" };
-const forms = combineForms({ data: initialForm }, "forms");
+const forms = combineForms(
+  { login: { username: "", room: "", color: "" }, data: { message: "" } },
+  "forms"
+);
 
 const socket = (state = null, action) => {
   switch (action.type) {
@@ -26,10 +28,10 @@ const counter = (state = 0, action) => {
   }
 };
 
-const page = (state = "USERNAME", action) => {
+const page = (state = "GET_USERNAME", action) => {
   switch (action.type) {
     case "SET_PAGE":
-      return action.payload;
+      return action.page;
     default:
       return state;
   }
