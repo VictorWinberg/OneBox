@@ -4,6 +4,15 @@ import { combineForms } from "react-redux-form";
 const initialForm = { username: "", room: "", message: "" };
 const forms = combineForms({ data: initialForm }, "forms");
 
+const socket = (state = null, action) => {
+  switch (action.type) {
+    case "SET_SOCKET":
+      return action.socket;
+    default:
+      return state;
+  }
+};
+
 const counter = (state = 0, action) => {
   switch (action.type) {
     case "INC":
@@ -25,6 +34,7 @@ const page = (state = "USERNAME", action) => {
       return state;
   }
 };
-const reducers = combineReducers({ forms, counter, page });
+
+const reducers = combineReducers({ forms, counter, page, socket });
 
 export default createStore(reducers);

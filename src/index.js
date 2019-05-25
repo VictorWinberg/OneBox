@@ -1,10 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import io from "socket.io-client";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import store from "./store";
+
+require("dotenv").config();
+
+const socket = io(`localhost:${process.env.PORT || 4000}`);
+store.dispatch({ type: "SET_SOCKET", socket });
 
 ReactDOM.render(
   <Provider store={store}>
