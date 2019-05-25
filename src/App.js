@@ -6,7 +6,7 @@ import Host from "./host";
 
 const App = () => (
   <BrowserRouter>
-    <Route path="/" component={Client} />
+    <Route exact path="/" component={Client} />
     <Route path="/host" component={Host} />
   </BrowserRouter>
 );

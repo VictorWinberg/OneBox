@@ -2,7 +2,7 @@ import { createStore, combineReducers } from "redux";
 import { combineForms } from "react-redux-form";
 
 const initialForm = { username: "", room: "", message: "" };
-const form = combineForms({ data: initialForm });
+const forms = combineForms({ data: initialForm }, "forms");
 
 const counter = (state = 0, action) => {
   switch (action.type) {
@@ -16,6 +16,15 @@ const counter = (state = 0, action) => {
       return state;
   }
 };
-const reducers = combineReducers({ form, counter });
+
+const page = (state = "USERNAME", action) => {
+  switch (action.type) {
+    case "SET_PAGE":
+      return action.payload;
+    default:
+      return state;
+  }
+};
+const reducers = combineReducers({ forms, counter, page });
 
 export default createStore(reducers);
