@@ -5,6 +5,13 @@ import { Form, Control, actions } from "react-redux-form";
 const show = bool => ({ display: bool ? "block" : "none" });
 
 class Login extends Component {
+  constructor() {
+    super();
+    this.state = {
+      status: "GET_USERNAME"
+    };
+  }
+
   componentDidMount() {
     const { dispatch, history, socket } = this.props;
 
@@ -15,20 +22,20 @@ class Login extends Component {
   }
 
   render() {
-    const { dispatch, page, socket } = this.props;
+    const { status } = this.state;
+    const { socket } = this.props;
     return (
       <Form
         model="forms.login"
         className="form"
         onSubmit={vals => {
-          switch (page) {
+          switch (status) {
             case "GET_USERNAME":
-              return dispatch({ type: "SET_PAGE", page: "GET_ROOM_CODE" });
+              return this.setState({ status: "GET_ROOM_CODE" });
             case "GET_ROOM_CODE":
               const { username, room } = vals;
               if (username && room) {
                 socket.emit("add user", username, room);
-                dispatch({ type: "SET_PAGE", page: "LOGGED_IN" });
               }
               return;
             default:
@@ -40,32 +47,34 @@ class Login extends Component {
         <ul className="pages">
           <li
             className="login page"
-            style={show(page === "GET_USERNAME" || page === "GET_ROOM_CODE")}
+            style={show(
+              status === "GET_USERNAME" || status === "GET_ROOM_CODE"
+            )}
           >
             <div className="form">
               <div
                 className="enter-username"
-                style={show(page === "GET_USERNAME")}
+                style={show(status === "GET_USERNAME")}
               >
                 <h3 className="title">What's your nickname?</h3>
                 <Control.text
                   model="forms.login.username"
                   className="usernameInput"
                   type="text"
-                  autoFocus={page === "GET_USERNAME"}
+                  autoFocus={status === "GET_USERNAME"}
                   maxLength="14"
                 />
               </div>
               <div
                 className="enter-room"
-                style={show(page === "GET_ROOM_CODE")}
+                style={show(status === "GET_ROOM_CODE")}
               >
                 <h3 className="title">What's the room code?</h3>
                 <Control.text
                   model="forms.login.room"
                   className="roomInput"
                   type="text"
-                  autoFocus={page === "GET_ROOM_CODE"}
+                  autoFocus={status === "GET_ROOM_CODE"}
                   maxLength="14"
                 />
               </div>
@@ -78,7 +87,6 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => ({
-  page: state.page,
   socket: state.socket
 });
 

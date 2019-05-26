@@ -9,9 +9,10 @@ class Client extends Component {
   }
 
   componentDidMount() {
-    const { page, history, socket, login } = this.props;
+    const { history, socket, login } = this.props;
+    const { username, room } = login;
 
-    if (page !== "LOGGED_IN") {
+    if (!username || !room) {
       return history.push("/login");
     }
 
@@ -93,7 +94,6 @@ class Client extends Component {
 }
 
 const mapStateToProps = state => ({
-  page: state.page,
   socket: state.socket,
   login: state.forms.login
 });
