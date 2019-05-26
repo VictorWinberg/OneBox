@@ -18,16 +18,13 @@ server.listen(port, () => {
 });
 
 // Routing
-app.use(express.static(path.resolve(__dirname, "..", "public")));
-// app.use(express.static(path.resolve(__dirname, "..", "build")));
+app.use(express.static(path.resolve(__dirname, "..", "build")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "..", "build", "index.html"));
 });
 
 // Chatroom
-let numUsers = 0;
-
 io.on("connection", socket => {
   let addedUser = false;
 
@@ -51,7 +48,6 @@ io.on("connection", socket => {
     socket.color = shuffle(COLORS, room)[
       socket.adapter.rooms[room].length % COLORS.length
     ];
-    ++numUsers;
     addedUser = true;
     socket.join(room);
     socket.emit("login", {
@@ -61,7 +57,7 @@ io.on("connection", socket => {
     socket.broadcast.in(socket.room).emit("user joined", {
       username: socket.username,
       color: socket.color,
-      numUsers: numUsers
+      userCount: socket.adapter.rooms[room].length
     });
   });
 
@@ -75,38 +71,22 @@ io.on("connection", socket => {
     addedUser = true;
     socket.join(room);
     socket.emit("login", {
-      numUsers: numUsers
-    });
-  });
-
-  // when the client emits 'typing', we broadcast it to others
-  socket.on("typing", () => {
-    socket.broadcast.in(socket.room).emit("typing", {
-      username: socket.username,
-      color: socket.color
-    });
-  });
-
-  // when the client emits 'stop typing', we broadcast it to others
-  socket.on("stop typing", () => {
-    socket.broadcast.in(socket.room).emit("stop typing", {
-      username: socket.username,
-      color: socket.color
+      userCount: socket.adapter.rooms[room].length
     });
   });
 
   // when the user disconnects.. perform this
   socket.on("disconnect", () => {
     if (addedUser) {
-      --numUsers;
-
       socket.leave(socket.room);
-      // echo globally that this client has left
-      socket.broadcast.in(socket.room).emit("user left", {
-        username: socket.username,
-        color: socket.color,
-        numUsers: numUsers
-      });
+
+      if (socket.adapter.rooms[socket.room]) {
+        socket.broadcast.in(socket.room).emit("user left", {
+          username: socket.username,
+          color: socket.color,
+          userCount: socket.adapter.rooms[socket.room].length
+        });
+      }
     }
   });
 });
