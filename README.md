@@ -1,20 +1,17 @@
 
-# Socket.IO Chat
+# OneBox
 
-A simple chat demo for socket.io
+A simple chat with socket.io
 
 ## How to use
 
 ```
-$ cd socket.io
-$ npm install
-$ cd examples/chat
 $ npm install
 $ npm start
 ```
 
-And point your browser to `http://localhost:3000`. Optionally, specify
-a port by supplying the `PORT` env variable.
+Visit `/host` to host a chatroom.
+Visit `/login` to join a chatroom.
 
 ## Features
 
